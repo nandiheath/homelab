@@ -57,23 +57,14 @@ manage_etc_hosts: localhost
 
 # provide custom CA cert
 ca_certs:
-  # If present and set to True, the 'remove_defaults' parameter will either
-  # disable all the trusted CA certifications normally shipped with
-  # Alpine, Debian or Ubuntu. On RedHat, this action will delete those
-  # certificates.
-  # This is mainly for very security-sensitive use cases - most users will not
-  # need this functionality.
-  remove_defaults: true
+  remove_defaults: false
 
-  # If present, the 'trusted' parameter should contain a certificate (or list
-  # of certificates) to add to the system as trusted CA certificates.
-  # Pay close attention to the YAML multiline list syntax.  The example shown
-  # here is for a list of multiline certificates.
+  # add the trusted CAs
   trusted:
   - |
-   "$(cat credentials/certs/intermediate/cert.pem)"
+$(cat credentials/certs/intermediate/cert.pem | awk '{print "    "$0}' )
   - |
-   "$(cat credentials/certs/root-ca/cert.pem)"
+$(cat credentials/certs/root-ca/cert.pem | awk '{print "    "$0}' )
 
 users:
   # not using default ubuntu user
@@ -87,8 +78,8 @@ users:
       - "$(cat ~/.ssh/id_rsa.pub)"
 
 runcmd:
-#  # per https://github.com/k3s-io/k3s/issues/4234
-  - apt install linux-modules-extra-raspi
+  # per https://github.com/k3s-io/k3s/issues/4234
+  - apt install -y linux-modules-extra-raspi
   - curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$k3s_version" INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC" sh -
 
 EOF

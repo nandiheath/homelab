@@ -120,10 +120,10 @@ basicConstraints       = CA:FALSE
 keyUsage               = digitalSignature, keyEncipherment
 
 EOF
-  openssl ca -create_serial -config "$CERT_DIR/intermediate/openssl.cnf" -policy signing_policy -extensions signing_req -cert "$CERT_DIR/root-ca/cert.pem" -keyfile "$CERT_DIR/root-ca/key.pem" -in "$intermediate_csr"  -out "$intermediate_cert"
+  openssl ca -create_serial -config "$CERT_DIR/intermediate/openssl.cnf" -policy signing_policy -extensions signing_req -cert "$CERT_DIR/root-ca/cert.pem" -keyfile "$CERT_DIR/root-ca/key.pem" -in "$intermediate_csr" -notext -out "$intermediate_cert"
 
   # verify the cert
-  openssl x509 -in "$intermediate_cert" -text -noout
+  openssl x509 -purpose -in "$intermediate_cert" -text -noout
 else
   echo "$CERT_DIR/intermediate already exists. abort generating "
 fi

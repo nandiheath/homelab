@@ -14,23 +14,22 @@ EOM
 node_id=$1
 user="nandi"
 hostname="node-rpi-$1"
+master_ip=10.43.2.1
 
 k3s_version="v1.28.2+k3s1"
 k3s_mode="master"
 
-K3S_ARGS="--cluster-cidr 10.45.0.0/16 --service-cidr 10.50.0.0/16 --cluster-dns 10.50.0.1 --node-name=rpi-node-$node_id"
+K3S_ARGS="--node-name=node-rpi-$node_id"
 INSTALL_K3S_EXEC=""
 if [[ "$node_id" == "0" ]]; then
   # server mode
-  INSTALL_K3S_EXEC="server $K3S_ARGS --node-label role=server"
+  INSTALL_K3S_EXEC="server $K3S_ARGS --node-label role=server --cluster-cidr 10.45.0.0/16 --service-cidr 10.50.0.0/16 --cluster-dns 10.50.0.100 --disable traefik --disable-network-policy"
 else
+  token=$(ssh "nandi@${master_ip}" -- sudo cat /var/lib/rancher/k3s/server/token)
+  [[ $? -ne 0 ]] && echo "cannot obtain server token. check ssh connection to ${master_ip}." && exit 1
   # client mode
-  INSTALL_K3S_EXEC="client $K3S_ARGS --node-label role=agent"
+  INSTALL_K3S_EXEC="agent $K3S_ARGS --node-label role=agent --server https://${master_ip}:6443 --token $token"
 fi
-
-
-
-
 
 [[ ! -f /Volumes/system-boot/user-data ]] && echo "Volume not mount. Make sure the SD-Card is inserted." && exit 1
 
@@ -95,3 +94,40 @@ EOF
 
 echo "done."
 echo ""
+
+
+
+echo "writing network config at /Volumes/system-boot/network-config ..."
+
+# make sure the network config enable DHCP and disable wifi to avoid network failure during bootup
+cat << EOF > /Volumes/system-boot/network-config
+network:
+  version: 2
+
+  ethernets:
+    eth0:
+      dhcp4: true
+      optional: true
+EOF
+
+echo "done."
+echo ""
+
+# Modify RPi fan speed
+
+if [[ ! $( cat /Volumes/system-boot/config.txt | grep "# PoE Hat Fan Speeds") ]]; then
+  # https://github.com/raspberrypi/linux/issues/2715#issuecomment-769405042
+  echo "+++ modifying PoE fan speed"
+  cat << EOF >> /Volumes/system-boot/config.txt
+
+# PoE Hat Fan Speeds
+dtoverlay=rpi-poe-plus
+dtparam=poe_fan_temp0=65000,poe_fan_temp0_hyst=2000
+dtparam=poe_fan_temp1=75000,poe_fan_temp1_hyst=5000
+dtparam=poe_fan_temp2=80000,poe_fan_temp2_hyst=3000
+dtparam=poe_fan_temp3=85000,poe_fan_temp3_hyst=5000
+
+EOF
+  echo "done."
+  echo ""
+fi

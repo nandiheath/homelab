@@ -10,4 +10,4 @@ fi
 
 echo "+++ booting multipass VM to validate cloud-init scripts .."
 # Test the generate user-data with multipass
-multipass launch 23.04 --name test-vm --cloud-init /Volumes/system-boot/user-data
+multipass launch 22.04 --name test-vm --cloud-init /Volumes/system-boot/user-data

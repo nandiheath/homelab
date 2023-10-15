@@ -11,7 +11,7 @@ https://whimsical.com/homelab-network-topology-PQYpjZ9LF5J1nC2yxTocJc
 ### OS
 
 - https://www.raspberrypi.com/software/
-- Download Ubuntu Server 23.10 (64 Bit)
+- Download Ubuntu Server 22.04 LTS (64 Bit)
 
 Once image is loaded to SD card, run the following script to setup cloud-init:
 
@@ -58,6 +58,13 @@ Run [multipass](https://cloudinit.readthedocs.io/en/latest/howto/predeploy_testi
 ./scripts/test-boot.sh
 ```
 
+## Debug
+
+```bash
+ssh nandi@node_ip
+
+> journalctl -u k3s.service -f
+```
 
 ## Operations
 

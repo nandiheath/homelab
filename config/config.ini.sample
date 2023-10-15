@@ -1,0 +1,4 @@
+user="nandi"
+hostname_prefix="node-rpi"
+master_ip=10.42.0.1
+kubecfg=~/.kube/homelab.config

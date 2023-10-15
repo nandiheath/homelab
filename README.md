@@ -1,6 +1,16 @@
 # HomeLab
 
 
+## Overview
+
+- Download Ubuntu 22.04 and burn it to SD card
+- Run `./script/boot-init [id]` to configure the boot configure for RPi image, this includes
+    - set up pre-requisities for running k3s
+    - configure k3s
+    - tune PoE+ fan speed
+- Insert the SD Card to RPi and boot each node up. **Important**: Boot the master node first i.e. `./script/boot-init 0`.
+- Get the kube config via `./script/setup-kubeconfig.sh` and you are good to go!
+
 ## Infrastructure
 
 https://whimsical.com/homelab-network-topology-PQYpjZ9LF5J1nC2yxTocJc

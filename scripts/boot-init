@@ -40,6 +40,11 @@ cat << EOF > /Volumes/system-boot/user-data
 apt_upgrade: true
 apt_update: true
 
+packages:
+  - linux-modules-extra-raspi
+
+package_reboot_if_required: true
+
 # disable password auth
 ssh_pwauth: false
 
@@ -78,7 +83,6 @@ users:
 
 runcmd:
   # per https://github.com/k3s-io/k3s/issues/4234
-  - apt install -y linux-modules-extra-raspi
   - curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$k3s_version" INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC" sh -
 
 EOF

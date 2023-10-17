@@ -1,7 +1,12 @@
 # HomeLab
 
+This is a hobby project to set up a production ready bare-metal K3S cluster running on Raspberry Pi,
 
-## Overview
+## Tech Stack
+
+
+
+## Getting Started
 
 - Download Ubuntu 22.04 and burn it to SD card
 - Run `./script/boot-init [id]` to configure the boot configure for RPi image, this includes
@@ -11,51 +16,34 @@
 - Insert the SD Card to RPi and boot each node up. **Important**: Boot the master node first i.e. `./script/boot-init 0`.
 - Get the kube config via `./script/setup-kubeconfig.sh` and you are good to go!
 
-## Infrastructure
-
-https://whimsical.com/homelab-network-topology-PQYpjZ9LF5J1nC2yxTocJc
-
-
 ## Installation
 
-### OS
+Make your own config file: `cp ./config/config.ini.sample ./config/config.ini`
 
-- https://www.raspberrypi.com/software/
-- Download Ubuntu Server 22.04 LTS (64 Bit)
+### Prepare The Network
 
-Once image is loaded to SD card, run the following script to setup cloud-init:
+The master node requires a static ip, 
+configure the DHCP setting in your router to assign a static IP for the hostname `rpi-node-0`.
+
+The prefix/master IP is configurable at `./config/config.ini`.
+
+### Prepare Your Raspberry Pi
+
+Prepare the boot device using [PI Imager](https://www.raspberrypi.com/software/), 
+the init scripts is tested only on Ubuntu Server 22.04 LTS (64 Bit).
+It is **HIGHLY RECOMMENDED** to use SSD storage as all intensive logging would exhaust the lifespan of SD card.
+
+Once image is loaded to storage, run the following script to setup cloud-init:
 
 ```bash
 # setup master node 
 ./scripts/boot-init 0
 
-# setup client node
+# to setup agent nodes, increment the number accordingly 
 ./scripts/boot-init 1
 ```
 
-This setup the bootstrap scripts for running a raspberry pi instance, and setup k3s on it.
-
-### Network
-
-K3S rely on IP, so we need to setup static DHCP leases for nodes
-
-```bash
-
-# Login to OpenWRT router:
-
-# update host:
-vi /etc/config/dhcp
-
-# reload dnsmasq
-/etc/init.d/dnsmasq restart
-
-# unplug & plug the network cable
-```
-
-
-
-
-
+The script setup everything (network/user/k3s) for the Raspberry Pi using `cloud-init`. 
 
 
 ## Development

@@ -23,7 +23,7 @@ K3S_ARGS="--node-name=node-rpi-$node_id"
 INSTALL_K3S_EXEC=""
 if [[ "$node_id" == "0" ]]; then
   # server mode
-  INSTALL_K3S_EXEC="server $K3S_ARGS --node-label role=server --cluster-cidr 10.45.0.0/16 --service-cidr 10.50.0.0/16 --cluster-dns 10.50.0.100 --disable traefik --disable-network-policy"
+  INSTALL_K3S_EXEC="server $K3S_ARGS --node-label role=server --cluster-cidr 10.45.0.0/16 --service-cidr 10.50.0.0/16 --cluster-dns 10.50.0.100 --disable traefik --disable-network-policy --disable servicelb"
 else
   token=$(ssh "nandi@${master_ip}" -- sudo cat /var/lib/rancher/k3s/server/token)
   [[ $? -ne 0 ]] && echo "cannot obtain server token. check ssh connection to ${master_ip}." && exit 1
@@ -36,15 +36,6 @@ fi
 echo "writing cloud-init at /Volumes/system-boot/user-data ..."
 cat << EOF > /Volumes/system-boot/user-data
 #cloud-config
-
-apt_upgrade: true
-apt_update: true
-
-packages:
-  - linux-modules-extra-raspi
-
-package_reboot_if_required: true
-
 # disable password auth
 ssh_pwauth: false
 
@@ -58,6 +49,13 @@ hostname: "$hostname"
 # cloud-init not managing hosts file. only hostname is added
 manage_etc_hosts: localhost
 
+package_update: true
+package_upgrade: true
+
+packages:
+  - linux-modules-extra-raspi
+
+package_reboot_if_required: true
 
 # provide custom CA cert
 ca_certs:

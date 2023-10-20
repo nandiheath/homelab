@@ -2,9 +2,24 @@
 
 This is a hobby project to set up a production ready bare-metal K3S cluster running on Raspberry Pi,
 
-## Tech Stack
+## Overview
 
+Setting up Raspberry Pi is fun. Setting up a K3S cluster is fun. 
+Setting up the IaC is fun.
+But setting them all up is ... not fun.
 
+This is a home-brew project aimed to break down all process into separate modules,
+providing a simple enough yet self-explanatory procedure for each step.
+
+Some Highlights:
+- a shell script to set up the boot settings and k3s via cloud-init for the Raspberry Pi
+- a shell script to download the kubeconfig
+- terraform modules for setting up initial IaC configurations
+  - remote vault with 1password connect
+  - secret-store operator provided by external-secrets
+  - ArgoCD setup to read private Github repository authenticated using Github App installation
+
+![simple-infra.png](simple-infra.png)
 
 ## Getting Started
 
@@ -16,7 +31,7 @@ This is a hobby project to set up a production ready bare-metal K3S cluster runn
 - Insert the SD Card to RPi and boot each node up. **Important**: Boot the master node first i.e. `./script/boot-init 0`.
 - Get the kube config via `./script/setup-kubeconfig.sh` and you are good to go!
 
-## Installation
+## Step 1. Setting Up K3S on New Raspberry Pi
 
 Make your own config file: `cp ./config/config.ini.sample ./config/config.ini`
 
@@ -45,6 +60,7 @@ Once image is loaded to storage, run the following script to setup cloud-init:
 
 The script setup everything (network/user/k3s) for the Raspberry Pi using `cloud-init`. 
 
+## Step 2. Setup ArgoCD using terraform
 
 ## Development
 

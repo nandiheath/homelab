@@ -11,6 +11,3 @@ inputs = {
   api_token = file("${get_repo_root()}/credentials/1password/1password-token.txt")
 }
 
-dependencies {
-  paths = ["../external-secrets", "../1password"]
-}

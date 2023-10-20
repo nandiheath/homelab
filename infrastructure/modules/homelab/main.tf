@@ -1,4 +1,0 @@
-
-module "argocd" {
-  source = "../argocd"
-}

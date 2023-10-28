@@ -24,10 +24,6 @@ INSTALL_K3S_EXEC=""
 if [[ "$node_id" == "0" ]]; then
   # server mode
   INSTALL_K3S_EXEC="server $K3S_ARGS --node-label role=server --cluster-cidr 10.45.0.0/16 --service-cidr 10.50.0.0/16 --cluster-dns 10.50.0.100 --disable traefik --disable-network-policy --disable servicelb "
-  # swtich kube-proxy to use ipvs and enable strict arp mode
-  INSTALL_K3S_EXEC+=" --kube-proxy-arg proxy-mode=ipvs"
-  INSTALL_K3S_EXEC+=" --kube-proxy-arg ipvs-strict-arp"
-  
   # INSTALL_K3S_EXEC+=" --kube-apiserver-arg max-requests-inflight=600"
 else
   token=$(ssh "nandi@${master_ip}" -- sudo cat /var/lib/rancher/k3s/server/token)
@@ -35,6 +31,11 @@ else
   # client mode
   INSTALL_K3S_EXEC="agent $K3S_ARGS --node-label role=agent --server https://${master_ip}:6443 --token $token"
 fi
+
+# shared k3s config:
+# swtich kube-proxy to use ipvs and enable strict arp mode
+INSTALL_K3S_EXEC+=" --kube-proxy-arg proxy-mode=ipvs"
+INSTALL_K3S_EXEC+=" --kube-proxy-arg ipvs-strict-arp"
 
 [[ ! -f /Volumes/system-boot/user-data ]] && echo "Volume not mount. Make sure the SD-Card is inserted." && exit 1
 

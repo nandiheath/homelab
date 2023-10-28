@@ -1,3 +1,10 @@
+## Argo Configs
+
+configs:
+  cm:
+    # enable kustomize w/ helm
+    kustomize.buildOptions: "--enable-helm"
+
 repoServer:
   # -- Repo server name
   name: repo-server

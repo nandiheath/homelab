@@ -1,5 +1,7 @@
 locals {
   namespace = "argocd"
+  argocd_repo = "https://github.com/nandiheath/homelab-argocd-infra"
+  argocd_application_path = "singularity/base/"
 }
 
 resource "helm_release" "argocd" {
@@ -11,7 +13,8 @@ resource "helm_release" "argocd" {
   version          = "5.46.8"
 
   values = [
-    file("values.yaml"),
+    # `values.yaml` will be overwritten if the file exists at terragrunt
+    file("${path.cwd}/values-default.yaml"),
     var.values
   ]
 }

@@ -116,20 +116,13 @@
         - name: Change server address in kubeconfig on control node
           ansible.builtin.shell: |
             KUBECONFIG={{ kubeconfig }} kubectl config set-cluster default --server=https://{{ api_endpoint }}:{{ api_port }}
+            KUBECONFIG={{ kubeconfig }} kubectl config rename-context default {{ cluster_context }}
           delegate_to: 127.0.0.1
           become: false
           register: csa_result
           changed_when:
             - csa_result.rc == 0
 
-        - name: Setup kubeconfig context on control node - {{ cluster_context }}
-          when: kubeconfig != "~/.kube/config"
-          ansible.builtin.replace:
-            path: "{{ kubeconfig }}"
-            regexp: 'name: default'
-            replace: 'name: {{ cluster_context }}'
-          delegate_to: 127.0.0.1
-          become: false
 
         - debug: msg="The kubeconfig is loaded to {{ kubeconfig }}. If it is not the default kubeconfig path, run the following command echo \"export KUBECONFIG=\"{{ kubeconfig }}:$KUBECONFIG\" > ~/.bash_rc"
 

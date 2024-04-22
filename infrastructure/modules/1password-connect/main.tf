@@ -13,6 +13,6 @@ resource "helm_release" "onepassword_connect" {
   # NOTE: This secret value must be base64 encoded after it becomes the OP_SESSION env var in the Connect Server Deployment, that means double base64 encoded here. (Or single w/ stringData.)
   set {
     name  = "connect.credentials_base64"
-    value = sensitive(base64encode(var.credentials))
+    value = sensitive(var.credentials)
   }
 }

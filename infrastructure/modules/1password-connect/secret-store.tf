@@ -1,5 +1,5 @@
-resource "kubernetes_manifest" "secret-store" {
-  manifest = yamldecode(<<YAML
+resource "kubectl_manifest" "secret-store" {
+  yaml_body =<<YAML
 apiVersion: external-secrets.io/v1beta1
 kind: ClusterSecretStore
 metadata:
@@ -19,5 +19,5 @@ spec:
             namespace: external-secrets
             key: token
 YAML
-  )
+
 }

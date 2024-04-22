@@ -11,3 +11,6 @@ inputs = {
   credentials = filebase64("${get_repo_root()}/credentials/1password/1password-credentials.json")
 }
 
+dependencies {
+  paths = ["../external-secrets"]
+}

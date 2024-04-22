@@ -5,7 +5,6 @@ resource "helm_release" "external_secrets" {
   namespace        = "external-secrets"
   create_namespace = true
   version          = "0.9.6"
-
 }
 
 locals {
@@ -30,5 +29,8 @@ resource "kubernetes_secret" "token" {
   data = {
     token = chomp(var.api_token)
   }
+
+  depends_on = [helm_release.external_secrets]
+
 }
 

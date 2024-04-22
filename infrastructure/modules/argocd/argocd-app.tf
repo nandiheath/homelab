@@ -1,7 +1,7 @@
-resource "kubernetes_manifest" "argocd_app" {
+resource "kubectl_manifest" "argocd_app" {
   # must be installed after ArgoCD is ready
   depends_on = [helm_release.argocd]
-  manifest = yamldecode(<<YAML
+  yaml_body = <<YAML
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -66,5 +66,4 @@ spec:
   # space used to store the history, so we do not recommend increasing it.
   revisionHistoryLimit: 10
 YAML
-  )
 }

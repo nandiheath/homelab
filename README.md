@@ -27,6 +27,7 @@ Some Highlights:
 
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 - [Taskfile](https://taskfile.dev/installation/)
+- [1Password Connect]()
 
 ### Setting Up The Raspberry Pi 
 
@@ -40,8 +41,16 @@ Some Highlights:
 
 - Configure the host information at `ansible/inventory.yaml` 
 - Run `task install`
-  - This will install the K3S cluster via Ansible 
+  - This will install the K3S cluster via Ansible
 
+
+### Setup 1Password Connect
+
+- Obtain the `1password-credentaisl.json` following the [guide](https://developer.1password.com/docs/connect/get-started?deploy=kubernetes&method=1password-com#step-1)
+- Put the file at `credentials/1password-credentaisl.json`
+- Run `task bootstrap`
+  - This will install the 1password-connect/external-secrets/argocd for bootstrapping the IaC 
+  
 ## Debug
 
 ```bash

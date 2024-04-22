@@ -4,7 +4,7 @@ usage() {
     cat <<EOM
   Usage:
     $(basename $0) boot-init [node_id]
-      e.g. boot-init 0 -> setup master node
+      e.g. boot-init 0
 
 EOM
     exit 0
@@ -14,30 +14,8 @@ EOM
 node_id=$1
 user="nandi"
 hostname="node-rpi-$1"
-master_ip=10.43.2.1
 
-k3s_version="v1.28.2+k3s1"
-k3s_mode="master"
-
-K3S_ARGS="--node-name=node-rpi-$node_id"
-INSTALL_K3S_EXEC=""
-if [[ "$node_id" == "0" ]]; then
-  # server mode
-  INSTALL_K3S_EXEC="server $K3S_ARGS --node-label role=server --cluster-cidr 10.45.0.0/16 --service-cidr 10.50.0.0/16 --cluster-dns 10.50.0.100 --disable traefik --disable-network-policy --disable servicelb "
-  # INSTALL_K3S_EXEC+=" --kube-apiserver-arg max-requests-inflight=600"
-else
-  token=$(ssh "nandi@${master_ip}" -- sudo cat /var/lib/rancher/k3s/server/token)
-  [[ $? -ne 0 ]] && echo "cannot obtain server token. check ssh connection to ${master_ip}." && exit 1
-  # client mode
-  INSTALL_K3S_EXEC="agent $K3S_ARGS --node-label role=agent --server https://${master_ip}:6443 --token $token"
-fi
-
-# shared k3s config:
-# swtich kube-proxy to use ipvs and enable strict arp mode
-INSTALL_K3S_EXEC+=" --kube-proxy-arg proxy-mode=ipvs"
-INSTALL_K3S_EXEC+=" --kube-proxy-arg ipvs-strict-arp"
-
-[[ ! -f /Volumes/system-boot/user-data ]] && echo "Volume not mount. Make sure the SD-Card is inserted." && exit 1
+[[ ! -d /Volumes/system-boot ]] && echo "Volume not mount. Make sure the SD-Card is inserted." && exit 1
 
 echo "writing cloud-init at /Volumes/system-boot/user-data ..."
 cat << EOF > /Volumes/system-boot/user-data
@@ -54,9 +32,6 @@ hostname: "$hostname"
 
 # cloud-init not managing hosts file. only hostname is added
 manage_etc_hosts: localhost
-
-package_update: true
-package_upgrade: true
 
 packages:
   - linux-modules-extra-raspi
@@ -85,10 +60,6 @@ users:
     ssh_authorized_keys:
       - "$(cat ~/.ssh/id_rsa.pub)"
 
-runcmd:
-  # per https://github.com/k3s-io/k3s/issues/4234
-  - curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$k3s_version" INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC" sh -
-
 EOF
 
 echo "done."
@@ -102,8 +73,6 @@ EOF
 
 echo "done."
 echo ""
-
-
 
 echo "writing network config at /Volumes/system-boot/network-config ..."
 

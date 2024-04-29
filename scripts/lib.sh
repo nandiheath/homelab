@@ -1,5 +1,6 @@
 #!/bin/bash
 
-function changed_charts() {
-  git diff --name-only origin/main | grep "charts/" | cut -d'/' -f1-2 | uniq
+function changed_files() {
+  local dir="$1"
+  git diff --name-only origin/main | grep "$dir/" | cut -d'/' -f1-3 | uniq
 }

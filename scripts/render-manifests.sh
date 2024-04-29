@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -oeu pipefail
+
 RENDER_DIR="rendered"
 
 dir_path=$(dirname "${BASH_SOURCE[0]}")
@@ -7,11 +9,11 @@ dir_path=$(dirname "${BASH_SOURCE[0]}")
 
 source "$dir_path/lib.sh"
 
-charts=$(changed_charts)
+changed_manifests=$(changed_files "manifests")
 
-for chart in $charts ; do
-  output_path="$RENDER_DIR/$(echo "$chart" | cut -d'/' -f2)"
+for manifests in $changed_manifests ; do
+  output_path="$RENDER_DIR/$(echo "$manifests" | cut -d'/' -f2-3)"
   mkdir -p "$output_path"
-  kustomize build --enable-helm "$chart" | yq -s '"'"$output_path/"'" + (.kind | downcase) + "_" + .metadata.name'
-
+  set +x
+  kustomize build --enable-helm "$manifests" | yq -s '"'"$output_path/"'" + (.kind | downcase) + "_" + .metadata.name'
 done

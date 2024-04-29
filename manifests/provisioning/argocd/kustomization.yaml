@@ -10,3 +10,6 @@ helmCharts:
       - values.yaml
     version: "6.7.17"
 
+resources:
+  - namespace.yaml
+

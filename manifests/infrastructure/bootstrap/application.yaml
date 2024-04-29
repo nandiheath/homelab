@@ -20,7 +20,7 @@ spec:
   # Source of the application manifests
   source:
     repoURL: https://github.com/nandiheath/homelab
-    targetRevision: HEAD  # For Helm, this refers to the chart version.
+    targetRevision: nandi/istio  # For Helm, this refers to the chart version.
     path: rendered/infrastructure
 
   # Destination cluster and namespace to deploy the application

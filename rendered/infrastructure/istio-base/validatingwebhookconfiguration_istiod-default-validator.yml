@@ -1,0 +1,37 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  labels:
+    app: istiod
+    istio: istiod
+    istio.io/rev: default
+    release: istio-base
+  name: istiod-default-validator
+webhooks:
+  - admissionReviewVersions:
+      - v1beta1
+      - v1
+    clientConfig:
+      service:
+        name: istiod
+        namespace: istio-system
+        path: /validate
+    failurePolicy: Ignore
+    name: validation.istio.io
+    rules:
+      - apiGroups:
+          - security.istio.io
+          - networking.istio.io
+          - telemetry.istio.io
+          - extensions.istio.io
+        apiVersions:
+          - '*'
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - '*'
+    sideEffects: None

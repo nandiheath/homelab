@@ -18,5 +18,8 @@ for manifests in $changed_manifests ; do
   set +x
   kustomize build --enable-helm "$manifests" | yq -s '"'"$output_path/"'" + (.kind | downcase) + "_" + (.metadata.name | sub("\.","-"))'
 
-  mv "$output_path/namespace"* "$RENDER_DIR/namespaces/"
+  if test -f "$output_path/namespace"*; then
+    mv "$output_path/namespace"* "$RENDER_DIR/namespaces/"
+  fi
+
 done

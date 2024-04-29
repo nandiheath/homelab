@@ -8,3 +8,4 @@ credentials
 **/.terraform.tfstate.lock.info
 *.tfstate
 *.tfstate.backup
+manifests/*/*/charts

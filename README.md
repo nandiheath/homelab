@@ -1,27 +1,30 @@
 # HomeLab
 
-This is a hobby project aimed to setup a high available, and portable Kubernetes cluster, 
+A comprehensive Gitops driven Kubernetes setup running on Raspberry Pi(s).
+
 
 ## Overview
 
-Setting up Raspberry Pi is fun. Setting up a K3S cluster is fun. 
-Setting up the IaC is fun.
-But setting them all up is ... not fun.
+This repository contains the entire stack of the HomeLab K3S cluster setup, which aimed at
 
-This is a home-brew project aimed to break down all process into separate modules,
-providing a simple enough yet self-explanatory procedure for each step.
+- Reliable (best-effort restrained by my home's condition)
+- Fully Automated 
+- Self Recoverable
+- Auto-Upgrade (both components and the K3S itself)
+- Secure
+- Portable
 
-Some Highlights:
-- a shell script to set up the boot settings and k3s via cloud-init for the Raspberry Pi
-- a shell script to download the kubeconfig
-- terraform modules for setting up initial IaC configurations
-  - remote vault with 1password connect
-  - secret-store operator provided by external-secrets
-  - ArgoCD setup to read private Github repository authenticated using Github App installation
-
-![simple-infra.png](simple-infra.png)
+The stack is chosen in a very opinionated way, you are welcomed to fork it and switch to your own choice ;)  
 
 ## Getting Started
+
+The Cluster provisioning flow consists of 3 main steps:
+
+- Initialize boot volume on RaspberryPi(s)
+- Bootstrap the cluster with Ansible
+- ArgoCD starts to reconcile the resources from Git
+
+![cluster_provisioning](cluster-provisioning.png)
 
 ### Prerequisites
 

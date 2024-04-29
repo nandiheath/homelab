@@ -15,5 +15,7 @@ for manifests in $changed_manifests ; do
   output_path="$RENDER_DIR/$(echo "$manifests" | cut -d'/' -f2-3)"
   mkdir -p "$output_path"
   set +x
-  kustomize build --enable-helm "$manifests" | yq -s '"'"$output_path/"'" + (.kind | downcase) + "_" + .metadata.name'
+  kustomize build --enable-helm "$manifests" | yq -s '"'"$output_path/"'" + (.kind | downcase) + "_" + (.metadata.name | sub("\.","-"))'
+
+  mv "$output_path/namespace"* "$RENDER_DIR/namespaces/"
 done

@@ -17,5 +17,6 @@ tasks:
       - ansible-playbook playbooks/upgrade.yaml
     silent: false
   bootstrap:
+    dir: ansible
     cmds:
-      - ./scripts/terragrunt.sh all apply
+      - ansible-playbook playbooks/bootstrap.yaml

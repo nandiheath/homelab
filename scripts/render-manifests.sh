@@ -12,6 +12,7 @@ source "$dir_path/lib.sh"
 changed_manifests=$(changed_files "manifests")
 
 for manifests in $changed_manifests ; do
+  echo "detected file changes in $manifests. rendering the raw manifests"
   output_path="$RENDER_DIR/$(echo "$manifests" | cut -d'/' -f2-3)"
   mkdir -p "$output_path"
   set +x

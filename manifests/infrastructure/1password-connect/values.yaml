@@ -1,3 +1,4 @@
 connect:
   # we don't need default NodePort as we only serve in-cluster purpose
   serviceType: ClusterIP
+
